@@ -1,8 +1,6 @@
-from typing import ForwardRef
 import SchematicTools
 from schematic import SchematicFile
 import numpy as np
-import typing
 import SchematicTools
 from PIL import Image
 #import glob

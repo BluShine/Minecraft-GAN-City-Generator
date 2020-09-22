@@ -1,13 +1,10 @@
 import tensorflow as tf
 
-import glob
-import imageio
 import numpy as np
 import os
 import PIL
 import time
 
-from IPython import display
 import modelGAN
 
 ## Train a GAN to create 8x8 chunks of Minecraft buildings.

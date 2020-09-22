@@ -1,7 +1,6 @@
 
 from generatorGAN import makeStructures
 from schematic import SchematicFile
-import copy
 import numpy as np
 import SchematicTools
 import generatorGAN
