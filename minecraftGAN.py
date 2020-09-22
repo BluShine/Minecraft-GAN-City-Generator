@@ -10,6 +10,8 @@ import time
 from IPython import display
 import modelGAN
 
+## Train a GAN to create 8x8 chunks of Minecraft buildings.
+
 tf.executing_eagerly()
 
 BUFFER_SIZE = 90000

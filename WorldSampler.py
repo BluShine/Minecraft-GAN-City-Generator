@@ -5,13 +5,23 @@ import numpy as np
 import typing
 import SchematicTools
 from PIL import Image
-import glob
+#import glob
 
+
+## Take a large schematic (or multiple schematics) as input data.
+## Process and export a numpy array that contains a large number of cube-shaped samples. 
+## The samples are also processed and converted to a simplified block format. 
+
+## voxel size in width, height, and length.
 SAMPLESIZE = 8
-FILEPATH = 'data/np_samples_%dx.npy' % SAMPLESIZE
-#worlds = glob.glob(SOURCEFOLDER + '/*.schematic')
-WORLDS = ['D:/Projects/MinecraftMLGenerator/Data/zearth_160_272_41.schematic']
-SAMPLECOUNT = 1000
+## export data path
+FILEPATH = 'data/np_samples_%dx.npy' % SAMPLESIZE 
+## Input schematic files.
+WORLDS = ['data/zearth_64_144_32.schematic']
+## Or you could load a number of schematics from a folder.
+#WORLDS = glob.glob("C:/yourschematicfolder/" + '/*.schematic') 
+## Number of samples to export.
+SAMPLECOUNT = 100000
 
 def sample(area:np.ndarray, samples:int, size:int) :
     samplerY = np.random.randint(0, area.shape[0] - size, samples)
