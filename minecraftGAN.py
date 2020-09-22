@@ -5,10 +5,10 @@ import imageio
 import numpy as np
 import os
 import PIL
-from tensorflow.keras import layers
 import time
 
 from IPython import display
+import modelGAN
 
 tf.executing_eagerly()
 
@@ -18,7 +18,7 @@ BASE = 2
 B2 = BASE * 2
 B3 = BASE * 4
 
-EPOCHS = 100
+EPOCHS = 20
 EPOCH_EXPORT_STEP = 10
 EPOCH_IMAGE_STEP = 10
 noise_dim = 100
@@ -32,52 +32,12 @@ minecraftSlices = minecraftSlices * 2 - 1
 # Batch and shuffle the data
 train_dataset = tf.data.Dataset.from_tensor_slices(minecraftSlices).shuffle(BUFFER_SIZE).batch(BATCH_SIZE)
 
-def make_generator_model():
-    model = tf.keras.Sequential()
-    model.add(layers.Dense(BASE*BASE*BASE*256, use_bias=False, input_shape=(100,)))
-    model.add(layers.BatchNormalization())
-    model.add(layers.LeakyReLU())
-
-    model.add(layers.Reshape((BASE, BASE, BASE, 256)))
-    assert model.output_shape == (None, BASE, BASE, BASE, 256) # Note: None is the batch size
-
-    model.add(layers.Conv3DTranspose(128, (5, 5, 5), strides=(1, 1, 1), padding='same', use_bias=False))
-    assert model.output_shape == (None, BASE, BASE, BASE, 128)
-    model.add(layers.BatchNormalization())
-    model.add(layers.LeakyReLU())
-
-    model.add(layers.Conv3DTranspose(64, (5, 5, 5), strides=(2, 2, 2), padding='same', use_bias=False))
-    assert model.output_shape == (None, B2, B2, B2, 64)
-    model.add(layers.BatchNormalization())
-    model.add(layers.LeakyReLU())
-
-    model.add(layers.Conv3DTranspose(1, (5, 5, 5), strides=(2, 2, 2), padding='same', use_bias=False, activation='tanh'))
-    assert model.output_shape == (None, B3, B3, B3, 1)
-
-    return model
-
-generator = make_generator_model()
+generator = modelGAN.make_generator_model(BASE)
 
 noise = tf.random.normal([1, 100])
 generated_image = generator(noise, training=False)
 
-def make_discriminator_model():
-    model = tf.keras.Sequential()
-    model.add(layers.Conv3D(64, (5, 5, 5), strides=(2, 2, 2), padding='same',
-                                     input_shape=[B3, B3, B3, 1]))
-    model.add(layers.LeakyReLU())
-    model.add(layers.Dropout(0.3))
-
-    model.add(layers.Conv3D(128, (5, 5, 5), strides=(2, 2, 2), padding='same'))
-    model.add(layers.LeakyReLU())
-    model.add(layers.Dropout(0.3))
-
-    model.add(layers.Flatten())
-    model.add(layers.Dense(1))
-
-    return model
-
-discriminator = make_discriminator_model()
+discriminator = modelGAN.make_discriminator_model(BASE)
 decision = discriminator(generated_image)
 print (decision)
 
@@ -93,8 +53,8 @@ def discriminator_loss(real_output, fake_output):
 def generator_loss(fake_output):
     return cross_entropy(tf.ones_like(fake_output), fake_output)
 
-generator_optimizer = tf.keras.optimizers.Adam(1e-4)
-discriminator_optimizer = tf.keras.optimizers.Adam(1e-4)
+generator_optimizer = tf.keras.optimizers.Adam(1e-3)
+discriminator_optimizer = tf.keras.optimizers.Adam(1e-3)
 
 checkpoint_dir = './training_checkpoints_%dx' % B3
 checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt")
