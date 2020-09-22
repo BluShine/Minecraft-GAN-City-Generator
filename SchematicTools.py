@@ -84,5 +84,5 @@ def randomSplatSurface(area:np.ndarray, sprites:np.ndarray, splats:int) :
     mask = simplify(area)
     for i in range(splats) :
         randomBlitSurface(area, mask, sprites[np.random.randint(0, sprites.shape[0])])
-        if i % 100 == 0 : print(i)
+        #if i % 100 == 0 : print(i)
     

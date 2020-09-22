@@ -1,6 +1,5 @@
 
 from generatorGAN import makeStructures
-from minecraftGAN_export import generateStructures
 from schematic import SchematicFile
 import copy
 import numpy as np
@@ -9,7 +8,12 @@ import generatorGAN
 
 ## Generate a settlement
 
-blockArr = SchematicTools.loadArea('data/test_schematic.schematic')
+INPUTWORLD = "data/example_world.schematic"
+EXPORTPATH = "data/example_world_output.schematic"
+BUILDINGSTOGENERATE = 10000
+BUILDINGSTOSPLAT = 10000
+
+blockArr = SchematicTools.loadArea(INPUTWORLD)
 print("loaded area: %d, %d, %d" % blockArr.shape)
 height = blockArr.shape[0]
 width = blockArr.shape[1]
@@ -18,12 +22,12 @@ output = SchematicFile(shape=blockArr.shape)
 
 print("generating structures")
 #structures = np.load('data/np_samples.npy')
-structures = makeStructures(1000)
-splats = 1000
-print("splatting %d" % splats)
-SchematicTools.randomSplatSurface(blockArr, gen, splats)
+structures = makeStructures(BUILDINGSTOGENERATE)
+print("generated %s" % str(structures.shape))
+print("splatting %d" % BUILDINGSTOSPLAT)
+SchematicTools.randomSplatSurface(blockArr, structures, BUILDINGSTOSPLAT)
 
 output.blocks = blockArr
 
-output.save("data/test_output.schematic")
-print("output to data/test_output.schematic")
+output.save(EXPORTPATH)
+print("output to %s" % EXPORTPATH)

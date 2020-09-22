@@ -22,7 +22,7 @@ def generateSampleStructures():
   for i in range(EXPORTGRID):
       row = np.empty((B3, 0, B3), np.uint8)
       for j in range(EXPORTGRID):
-          structure = predictions[i*EXPORTGRID + j, :, :, :, 0] * .5 + .5
+          structure = predictions[i*EXPORTGRID + j, :, :, :]
           structure = np.concatenate((structure, 
                 np.zeros((B3, EXPORTSPACING, B3), 
                 dtype=np.uint8)), axis=1)

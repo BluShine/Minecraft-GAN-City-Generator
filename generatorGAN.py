@@ -39,4 +39,8 @@ checkpoint = tf.train.Checkpoint(generator_optimizer=generator_optimizer,
 checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir)).expect_partial()
 
 def makeStructures(structureCount):
-    return generator(tf.random.normal([structureCount, noise_dim]), training=False)
+    output = generator(tf.random.normal([structureCount, noise_dim]), training=False)
+    output = output * .5 + .5
+    output = output.numpy()
+    output.shape = [structureCount, B3, B3, B3]
+    return output
